@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Flask Auth App{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <div class="card">
+            <div class="card-header">
+                <h3>User Dashboard</h3>
+            </div>
+            <div class="card-body">
+                <h4>Welcome, {{ current_user.username }}!</h4>
+                <p class="text-muted">Email: {{ current_user.email }}</p>
+                <p class="text-muted">Role: {{ current_user.role }}</p>
+                <p class="text-muted">Member since: {{ current_user.created_at.strftime('%Y-%m-%d') }}</p>
+                
+                <hr>
+                
+                <h5>Your Account Details:</h5>
+                <ul class="list-group">
+                    <li class="list-group-item">Username: {{ current_user.username }}</li>
+                    <li class="list-group-item">Email: {{ current_user.email }}</li>
+                    <li class="list-group-item">User ID: {{ current_user.id }}</li>
+                    <li class="list-group-item">Account Status: {{ 'Active' if current_user.is_active else 'Inactive' }}</li>
+                </ul>
+                
+                {% if current_user.role == 'admin' %}
+                <div class="alert alert-info mt-3">
+                    <strong>Admin Access:</strong> You have administrator privileges.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
