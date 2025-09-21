@@ -9,15 +9,19 @@ from forms import RegistrationForm, LoginForm
 
 # Initialize Flask app
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'your-secret-key-here-change-in-production'
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'your-secret-key-here-change-in-production')
 
-# Ensure the instance directory exists
-os.makedirs('instance', exist_ok=True)
+# Database configuration for Render deployment
+if os.environ.get('RENDER'):
+    # Production database configuration for Render
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
+else:
+    # Local development configuration
+    os.makedirs('instance', exist_ok=True)
+    base_dir = os.path.abspath(os.path.dirname(__file__))
+    db_path = os.path.join(base_dir, 'instance', 'database.db')
+    app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
 
-# Configure database URI - using absolute path to avoid permission issues
-base_dir = os.path.abspath(os.path.dirname(__file__))
-db_path = os.path.join(base_dir, 'instance', 'database.db')
-app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Initialize extensions
@@ -121,7 +125,7 @@ def internal_error(error):
     db.session.rollback()
     return render_template('500.html'), 500
 
-# Create database tables
+# Create database tables - This will run automatically when the app starts
 def create_tables():
     with app.app_context():
         try:
@@ -142,15 +146,10 @@ def create_tables():
                 
         except Exception as e:
             print(f"Error creating database: {e}")
-            # Try with a simpler database path as fallback
-            try:
-                app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///simple_database.db'
-                db.init_app(app)
-                db.create_all()
-                print("Database created with fallback path!")
-            except Exception as e2:
-                print(f"Fallback also failed: {e2}")
 
+# Initialize database tables when the app starts
+create_tables()
+
+# For local development only
 if __name__ == '__main__':
-    create_tables()
     app.run(debug=True, host='0.0.0.0', port=5000)
