@@ -1,0 +1,79 @@
+1)  first create the venv using this command:
+
+python3.10 -m venv venv
+
+
+2)  Activate this usnig this command:
+
+source venv/bin/activate
+
+3) clonethe repo : 
+
+git clone https://github.com/vijayamurugan27/YIT_Moodibidri_Deploy_FlaskApp_2025
+
+4)   install dependencis using this command: (navigate to this path using this for the cd /home/username/YIT_Moodibidri_Deploy_FlaskApp_2025/Flask_auth)
+
+pip install -r requirements.txt
+
+5) source code /working directory :
+
+/home/username/YIT_Moodibidri_Deploy_FlaskApp_2025/Flask_auth
+
+6) for venv path: 
+
+/home/username/venv
+
+7) configure your wsgi.pi
+
+
+import sys
+import os
+
+# Add your project directory to the sys.path
+# Replace 'yourusername' with your actual PythonAnywhere username
+# Replace 'YIT_Moodibidri_Deploy_FlaskApp_2025' with your actual project folder name
+project_home = '/home/yourusername/YIT_Moodibidri_Deploy_FlaskApp_2025'
+if project_home not in sys.path:
+    sys.path = [project_home] + sys.path
+
+# Set environment variables if needed
+os.environ['DJANGO_SETTINGS_MODULE'] = 'mysite.settings'  # Remove this line if not using Django
+os.environ.setdefault('FLASK_ENV', 'production')
+
+# Option 1: If your main Flask app is in app.py
+try:
+    from app import app as application
+except ImportError:
+    # Option 2: If your main Flask app is in run.py
+    try:
+        from run import app as application
+    except ImportError:
+        # Option 3: If your Flask app is in main.py
+        try:
+            from main import app as application
+        except ImportError:
+            # Option 4: If your Flask app is in a package structure
+            try:
+                from myapp import create_app
+                application = create_app()
+            except ImportError:
+                # Option 5: If your Flask app variable is named differently
+                try:
+                    from app import create_app
+                    application = create_app()
+                except ImportError:
+                    # Option 6: Generic Flask app import
+                    from flask import Flask
+                    application = Flask(__name__)
+
+                    @application.route('/')
+                    def hello_world():
+                        return '<h1>Hello from PythonAnywhere!</h1><p>Please check your Flask app import in wsgi.py</p>'
+
+# Debugging: uncomment the following lines if you're having import issues
+# print("Python path:", sys.path, file=sys.stderr)
+# print("Current working directory:", os.getcwd(), file=sys.stderr)
+# print("Files in project directory:", os.listdir(project_home), file=sys.stderr)
+
+if __name__ == "__main__":
+    application.run()
