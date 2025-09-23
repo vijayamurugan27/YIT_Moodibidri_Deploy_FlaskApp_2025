@@ -3,25 +3,27 @@
 python3.10 -m venv venv
 
 
-2)  Activate thisusnigthis command:
+2)  Activate this usnig this command:
 
 source venv/bin/activate
 
+3) clonethe repo : 
 
+git clone https://github.com/vijayamurugan27/YIT_Moodibidri_Deploy_FlaskApp_2025
 
-3)   install dependencis using this command: 
+4)   install dependencis using this command: (navigate to this path using this for the cd /home/username/YIT_Moodibidri_Deploy_FlaskApp_2025/Flask_auth)
 
 pip install -r requirements.txt
 
-4) source code /working directory :
+5) source code /working directory :
 
-/home/vijayamurugan2712/YIT_Moodibidri_Deploy_FlaskApp_2025/Flask_auth
+/home/username/YIT_Moodibidri_Deploy_FlaskApp_2025/Flask_auth
 
-5) for venv path: 
+6) for venv path: 
 
-/home/vijayamurugan2712/venv
+/home/username/venv
 
-6) configure your wsgi.pi
+7) configure your wsgi.pi
 
 
 import sys
